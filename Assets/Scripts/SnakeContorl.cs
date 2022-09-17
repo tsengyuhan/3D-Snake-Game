@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class SnakeContorl : MonoBehaviour
 {
     public int MoveSpeed = 5;
@@ -10,6 +11,7 @@ public class SnakeContorl : MonoBehaviour
     public int Gap = 5;// the sapce between two body parts
 
     public GameObject SnakeBody;
+    public GameObject SnakeParent;
     
     private List<GameObject> BodyParts = new List<GameObject>();
 
@@ -17,26 +19,21 @@ public class SnakeContorl : MonoBehaviour
     private List<Vector3> HistoryPosition = new List<Vector3>();
 
 
+   
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        GrowSnake();
-        GrowSnake();
-        GrowSnake();
-        GrowSnake();
-        GrowSnake();
-    }
 
+    
     // Update is called once per frame
     void Update()
     {
+        
         //move forward
         transform.position += transform.forward * MoveSpeed * Time.deltaTime;
-
+        
         //change direction
         float steerDirection = Input.GetAxis("Horizontal");
         transform.Rotate(Vector3.up * steerDirection * SteerSpeed * Time.deltaTime);
+        
 
         //save the past position
         HistoryPosition.Insert(0,transform.position);
@@ -58,4 +55,16 @@ public class SnakeContorl : MonoBehaviour
         GameObject body = Instantiate(SnakeBody);
         BodyParts.Add(body);
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.CompareTag("PickUp"))
+        {
+            Debug.Log("yes");   
+            other.gameObject.SetActive(false);
+            GrowSnake();
+        }
+    }
+
+    
 }
