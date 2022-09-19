@@ -11,12 +11,15 @@ public class SnakeContorl : MonoBehaviour
     public int Gap = 5;// the sapce between two body parts
 
     public GameObject SnakeBody;
-    public GameObject SnakeParent;
+    //public GameObject SnakeParent;
     
     private List<GameObject> BodyParts = new List<GameObject>();
 
     //Save the postion of each body part
     private List<Vector3> HistoryPosition = new List<Vector3>();
+
+    private int score;
+
 
 
    
@@ -60,9 +63,17 @@ public class SnakeContorl : MonoBehaviour
     {
         if(other.gameObject.CompareTag("PickUp"))
         {
-            Debug.Log("yes");   
+            //Debug.Log("yes");   
             other.gameObject.SetActive(false);
             GrowSnake();
+            score ++;
+            if(score % 5 == 0)
+            {
+                MoveSpeed ++;
+                BodySpeed ++;
+            }
+            print(score);
+            
         }
     }
 

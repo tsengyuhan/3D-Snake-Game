@@ -20,16 +20,18 @@ public class FloorControl : MonoBehaviour
     
     IEnumerator RotateLeft()
     {
-        player.transform.position = new Vector3(-10f,10.5f,player.transform.position.z);
+        player.transform.rotation = Quaternion.AngleAxis(-90, new Vector3(0.0f, 0.0f, 1.0f)) * player.transform.rotation;
+        //print(player.transform.localEulerAngles);
         while(transform.rotation.z < final_angle_z){
             transform.rotation = Quaternion.Slerp(transform.localRotation, targetRotation, RotateSpeed * Time.deltaTime);
             yield return null;
         }
+        //print(player.transform.localEulerAngles);
     }
 
     IEnumerator RotateRight()
     {
-        player.transform.position = new Vector3(10f,10.5f,player.transform.position.z);
+        player.transform.rotation = Quaternion.AngleAxis(90, new Vector3(0.0f, 0.0f, 1.0f)) * player.transform.rotation;
         while(transform.rotation.z > final_angle_z){
             transform.rotation = Quaternion.Slerp(transform.localRotation, targetRotation, RotateSpeed * Time.deltaTime);
             yield return null;
@@ -38,7 +40,7 @@ public class FloorControl : MonoBehaviour
 
     IEnumerator Forward()
     {
-        player.transform.position = new Vector3(player.transform.position.x,10.5f,10f);
+        player.transform.rotation = Quaternion.AngleAxis(-90, new Vector3(1.0f, 0.0f, 0.0f)) * player.transform.rotation;
         while(transform.rotation.x < final_angle_x){
             transform.rotation = Quaternion.Slerp(transform.localRotation, targetRotation, RotateSpeed * Time.deltaTime);
             yield return null;
@@ -47,7 +49,7 @@ public class FloorControl : MonoBehaviour
 
     IEnumerator Backward()
     {
-        player.transform.position = new Vector3(player.transform.position.x,10.5f,-10f);
+        player.transform.rotation = Quaternion.AngleAxis(90, new Vector3(1.0f, 0.0f, 0.0f)) * player.transform.rotation;
         while(transform.rotation.x > final_angle_x){
             transform.rotation = Quaternion.Slerp(transform.localRotation, targetRotation, RotateSpeed * Time.deltaTime);
             yield return null;
