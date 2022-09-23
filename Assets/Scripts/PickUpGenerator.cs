@@ -9,6 +9,8 @@ public class PickUpGenerator : MonoBehaviour
     public GameObject food;
 
     public GameObject FoodParent;
+    public GameObject SnakeHead;
+
 
     private List<Vector3> FoodPosition = new List<Vector3>();
 
@@ -38,15 +40,14 @@ public class PickUpGenerator : MonoBehaviour
         for(int i=0; i< Total; i++)
         {
             Vector3 food_pos = new Vector3(Random.Range(-9,9), height, Random.Range(-9,9));
-            for(int j=0; j<i; j++){
-                if( j != i)
+            for(int j=0; j< FoodPosition.Count; j++){
+                if(i != j)
                 {
-                    if(Vector3.Distance(food_pos, FoodPosition[j]) < 8)
+                    while(Vector3.Distance(food_pos, FoodPosition[j]) < 6 || Vector3.Distance(food_pos, SnakeHead.transform.position) < 5 )
                     {
                         food_pos = new Vector3(Random.Range(-9,9), height, Random.Range(-9,9));
                     }
                 }
-
             }
             GameObject body = Instantiate(food, food_pos, food.transform.rotation, FoodParent.transform);
             FoodPosition.Add(body.transform.position);
@@ -62,10 +63,10 @@ public class PickUpGenerator : MonoBehaviour
         for(int i=0; i< Total; i++)
         {
             Vector3 food_pos = new Vector3(height, Random.Range(-9,9), Random.Range(-9,9));
-            for(int j=0; j<i; j++){
+            for(int j=0; j< FoodPosition.Count; j++){
                 if( j != i)
                 {
-                    if(Vector3.Distance(food_pos, FoodPosition[j]) < 8)
+                    while(Vector3.Distance(food_pos, FoodPosition[j]) < 6 || Vector3.Distance(food_pos, SnakeHead.transform.position) < 5 )
                     {
                         food_pos = new Vector3(height, Random.Range(-9,9), Random.Range(-9,9));
                     }
@@ -86,10 +87,10 @@ public class PickUpGenerator : MonoBehaviour
         for(int i=0; i< Total; i++)
         {
             Vector3 food_pos = new Vector3(Random.Range(-9,9), Random.Range(-9,9),height);
-            for(int j=0; j<i; j++){
+            for(int j=0; j< FoodPosition.Count; j++){
                 if( j != i)
                 {
-                    if(Vector3.Distance(food_pos, FoodPosition[j]) < 8)
+                    while(Vector3.Distance(food_pos, FoodPosition[j]) < 6 || Vector3.Distance(food_pos, SnakeHead.transform.position) < 5 )
                     {
                         food_pos = new Vector3(Random.Range(-9,9), Random.Range(-9,9),height);
                     }
@@ -102,4 +103,5 @@ public class PickUpGenerator : MonoBehaviour
         }
         FoodPosition.Clear();
     }
+
 }
