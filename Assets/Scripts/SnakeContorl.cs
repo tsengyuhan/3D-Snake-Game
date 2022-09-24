@@ -32,7 +32,6 @@ public class SnakeContorl : MonoBehaviour
 
     private Vector3 offset; // the offset between snake and the camera
     private Vector3 CameraEndPos;
-    private float MaxFallSpeed = 10.0f;
 
     
     public List<GameObject> BodyParts = new List<GameObject>();
@@ -40,7 +39,9 @@ public class SnakeContorl : MonoBehaviour
     //Save the postion of each body part
     private List<Vector3> HistoryPosition = new List<Vector3>();
 
-    private int score;
+    private int score = 0;
+    private int toatalScore = 5;
+    public TextMeshProUGUI ScoreText;
 
     private Rigidbody rb;
     public bool gameOver;
@@ -66,7 +67,9 @@ public class SnakeContorl : MonoBehaviour
         //GameOverText.SetActive(false);
         rb = GetComponent<Rigidbody>();
         offset = new Vector3(0,5,-5);
-
+        ScoreText.text = "Body:" + score + " / " + toatalScore + "m";
+        ScoreText.enabled = false;
+        
     }
 
 
@@ -75,7 +78,7 @@ public class SnakeContorl : MonoBehaviour
     void FixedUpdate()
     {
 
-        if(rb.velocity.magnitude > 15 && !flag )
+        if(rb.worldCenterOfMass.y < 4 && !flag )
         {
             gameOver = true;
             flag = true;
@@ -87,15 +90,14 @@ public class SnakeContorl : MonoBehaviour
             //offset = Camera.transform.position - transform.position;
         }
         
-        if (!gameOver && start)
+        if (!gameOver  && start)
         {
             //move forward
             transform.position += transform.forward * MoveSpeed * Time.deltaTime;
-        
+
             //change direction
             float steerDirection = Input.GetAxis("Horizontal");
             transform.Rotate(Vector3.up * steerDirection * SteerSpeed * Time.deltaTime);
-            
         }
 
         //when the game ends
@@ -105,8 +107,13 @@ public class SnakeContorl : MonoBehaviour
             cameraAni.enabled = false;
             //var x =  Mathf.Clamp(rb.velocity.x,0f,10f);
             //limit the veliciity of the snake's head so the body can follow up
-            var y =  Mathf.Clamp(rb.velocity.y,-MaxFallSpeed,MaxFallSpeed);
+            var y =  Mathf.Clamp(rb.velocity.y,-MoveSpeed,MoveSpeed);
             //var z =  Mathf.Clamp(rb.velocity.z,0f,10f); 
+
+            transform.position += transform.forward * MoveSpeed * Time.deltaTime;
+            //change direction
+            float steerDirection =Random.Range(-5.0f,5.0f);
+            transform.Rotate(Vector3.up * steerDirection * SteerSpeed * Time.deltaTime);
 
             //Camera.main.transform.position = transform.position + offset;
             Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, transform.position + offset, Time.deltaTime * CameraSpeed);
@@ -118,6 +125,36 @@ public class SnakeContorl : MonoBehaviour
             }
             
             rb.velocity = new Vector3(rb.velocity.x, y, rb.velocity.z);
+        }
+
+        if(score == toatalScore)
+        {
+            //print("win");
+            start = false;
+            StatusText.text = "You're the longest CATerpillar!";
+            AllTexts.SetActive(true);
+
+            Vector3 moveStep = new Vector3(Random.Range(-1.0f,1.0f),0.0f,0.0f);
+
+            /*while(moveStep.x > 9.0f || moveStep.x < 0.0f)
+            {
+                moveStep = new Vector3(Random.Range(-1.0f,1.0f),0.0f,0.0f);
+            }*/
+
+            //move forward
+            transform.position += moveStep * 0.5f;
+
+            if(transform.position.x > 9.0f || transform.position.x < 1.0f)
+            {
+                transform.position = transform.position;
+            }
+
+
+
+        
+            //change direction
+            float steerDirection =Random.Range(-5.0f,5.0f);
+            transform.Rotate(Vector3.up * steerDirection * SteerSpeed * Time.deltaTime);
         }
         
         //save the past position
@@ -136,7 +173,8 @@ public class SnakeContorl : MonoBehaviour
             }
             
             index++;
-        } 
+        }
+        ScoreText.text = "Body:" + score + " / " + toatalScore + "m";
     }
 
     
@@ -181,6 +219,7 @@ public class SnakeContorl : MonoBehaviour
     void OnStart()
     {
         AllTexts.SetActive(false);
+        ScoreText.enabled = true;
         if(gameOver)
         {
             SceneManager.LoadScene("MainScene");
