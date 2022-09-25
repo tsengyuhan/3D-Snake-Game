@@ -40,12 +40,14 @@ public class SnakeContorl : MonoBehaviour
     private List<Vector3> HistoryPosition = new List<Vector3>();
 
     private int score = 0;
-    private int toatalScore = 5;
+    private int toatalScore = 48;
     public TextMeshProUGUI ScoreText;
 
     private Rigidbody rb;
     public bool gameOver;
     private bool flag = false;
+    private bool win = false;
+    private int winTurnDir = 1;
     public bool start = false;
 
     public GameObject AllTexts;
@@ -90,6 +92,8 @@ public class SnakeContorl : MonoBehaviour
             //offset = Camera.transform.position - transform.position;
         }
         
+        
+
         if (!gameOver  && start)
         {
             //move forward
@@ -129,32 +133,45 @@ public class SnakeContorl : MonoBehaviour
 
         if(score == toatalScore)
         {
+            win = true;
+        }
+
+        if(win)
+        {
             //print("win");
             start = false;
             StatusText.text = "You're the longest CATerpillar!";
             AllTexts.SetActive(true);
 
-            Vector3 moveStep = new Vector3(Random.Range(-1.0f,1.0f),0.0f,0.0f);
 
             /*while(moveStep.x > 9.0f || moveStep.x < 0.0f)
             {
                 moveStep = new Vector3(Random.Range(-1.0f,1.0f),0.0f,0.0f);
             }*/
 
-            //move forward
-            transform.position += moveStep * 0.5f;
 
-            if(transform.position.x > 9.0f || transform.position.x < 1.0f)
+            /*if(transform.position.z > 8.0f)
             {
-                transform.position = transform.position;
+                transform.position = new Vector3(transform.position.x, transform.position.y, 8.0f);
             }
+            if(transform.position.z < 2.0f)
+            {
+                transform.position = new Vector3(transform.position.x, transform.position.y, 2.0f);
+            }
+            if(transform.position.x > 8.0f)
+            {
+                transform.position = new Vector3(8.0f, transform.position.y, transform.position.z);
+            }
+            if(transform.position.x < 2.0f)
+            {
+                transform.position = new Vector3(2.0f, transform.position.y, transform.position.z);
+            }*/
 
-
-
-        
             //change direction
-            float steerDirection =Random.Range(-5.0f,5.0f);
-            transform.Rotate(Vector3.up * steerDirection * SteerSpeed * Time.deltaTime);
+            float steerDirection = Random.Range(-0.5f,-1.0f);
+            int steerAng = Random.Range(90,180);
+            transform.Rotate(Vector3.up * steerDirection * steerAng * Time.deltaTime);
+            transform.position += transform.forward * MoveSpeed * Time.deltaTime;
         }
         
         //save the past position
@@ -220,7 +237,7 @@ public class SnakeContorl : MonoBehaviour
     {
         AllTexts.SetActive(false);
         ScoreText.enabled = true;
-        if(gameOver)
+        if(gameOver || win)
         {
             SceneManager.LoadScene("MainScene");
         }
