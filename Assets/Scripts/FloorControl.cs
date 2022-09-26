@@ -1,17 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class FloorControl : MonoBehaviour
 {
     SnakeContorl snakecontroler; //empty container that for SnakeControl script
-    private float RotateSpeed = 0.0005f;
+    //private float RotateSpeed = 0.0005f;
     public GameObject player;
     public bool TurnFloor = false;
 
 
     private Quaternion targetRotation;
+
+    private Quaternion startPoint;
+    private Quaternion targetPoint ;
 
     private bool input_lock = false;
 
@@ -31,25 +33,49 @@ public class FloorControl : MonoBehaviour
             input_lock = true;
             //print("game over");
         }
+        if(Input.GetKeyDown ("a"))
+        {
+           TurnLeft();
+        }
+        else if(Input.GetKeyDown ("d"))
+        {
+            TurnRight();
+        }
+        else if(Input.GetKeyDown ("w"))
+        {
+            Forward();
+        }
+        else if(Input.GetKeyDown ("s"))
+        {
+            Backward();
+        }
+
     }
 
-    IEnumerator Rotate(Vector3 axis, float playerRotate, int rotateStep)
+    IEnumerator Rotate(Vector3 axis, float playerRotate)
     {
         input_lock = true;
-        //print("lock");
+
+        startPoint = transform.rotation;
+        targetPoint = Quaternion.AngleAxis(-playerRotate, axis) * startPoint;
+
         player.transform.rotation = Quaternion.AngleAxis(playerRotate, axis) * player.transform.rotation;
-        for(int i=1; i<=90; i++)
+        float speed = 3.5f;
+        float timeCount = 0.0f;
+        while(timeCount < 1)
         {
-            transform.rotation = Quaternion.AngleAxis(rotateStep, axis) * transform.rotation;
-            if(i==90)
+            transform.rotation = Quaternion.Lerp(startPoint, targetPoint, timeCount);
+            timeCount += Time.deltaTime * speed;
+            if(timeCount >= 1)
             {
+                transform.rotation = targetPoint;
                 input_lock = false;
                 //print("unlock");
                 TurnFloor = false;
                 yield return null;
             }
-            yield return new WaitForSeconds(RotateSpeed);
-        }   
+            yield return null;
+        }
         
     }
     
@@ -57,52 +83,52 @@ public class FloorControl : MonoBehaviour
 
 
 
-    void OnTurnLeft()
+    private void TurnLeft()
     {
         if(!input_lock)
         {
             TurnFloor = true;
             targetRotation = Quaternion.AngleAxis(90, new Vector3(0.0f, 0.0f, 1.0f)) * transform.rotation;
-            StartCoroutine(Rotate(new Vector3(0.0f, 0.0f, 1.0f), -90.0f, 1));
+            StartCoroutine(Rotate(new Vector3(0.0f, 0.0f, 1.0f), -90.0f));
         }
         else
         {
             return;
         }
     }
-    void OnTurnRight()
+    private void TurnRight()
     {
         if(!input_lock)
         {
             TurnFloor = true;
             targetRotation = Quaternion.AngleAxis(-90, new Vector3(0.0f, 0.0f, 1.0f)) * transform.rotation;
-            StartCoroutine(Rotate(new Vector3(0.0f, 0.0f, 1.0f), 90.0f, -1));
+            StartCoroutine(Rotate(new Vector3(0.0f, 0.0f, 1.0f), 90.0f));
         }
         else
         {
             return;
         }
     }
-    void OnForward()
+    private void Forward()
     {
         if(!input_lock)
         {
             TurnFloor = true;
             targetRotation = Quaternion.AngleAxis(90, new Vector3(1.0f, 0.0f, 0.0f)) * transform.rotation;
-            StartCoroutine(Rotate(new Vector3(1.0f, 0.0f, 0.0f), -90.0f, 1));
+            StartCoroutine(Rotate(new Vector3(1.0f, 0.0f, 0.0f), -90.0f));
         }
         else
         {
             return;
         }
     }
-    void OnBackward()
+    private void Backward()
     {
         if(!input_lock)
         {
             TurnFloor = true;
             targetRotation = Quaternion.AngleAxis(-90, new Vector3(1.0f, 0.0f, 0.0f)) * transform.rotation;
-            StartCoroutine(Rotate(new Vector3(1.0f, 0.0f, 0.0f), 90.0f, -1));
+            StartCoroutine(Rotate(new Vector3(1.0f, 0.0f, 0.0f), 90.0f));
         }
         else
         {

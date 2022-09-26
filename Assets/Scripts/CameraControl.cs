@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class CameraControl : MonoBehaviour
 {
@@ -33,7 +32,10 @@ public class CameraControl : MonoBehaviour
     // Update after every update in a frame
     void Update()
     {
-
+        if(Input.GetKeyDown (KeyCode.Return))
+        {
+           MoveCamera();
+        }
     }
 
     IEnumerator CameraMove()
@@ -42,7 +44,7 @@ public class CameraControl : MonoBehaviour
         return null;
     }
 
-    void OnStart()
+    void MoveCamera()
     {
         StartCoroutine("CameraMove");
         Invoke("StartGame",1);

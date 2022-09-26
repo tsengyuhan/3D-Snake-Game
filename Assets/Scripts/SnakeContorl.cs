@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using TMPro;
 using UnityEngine.SceneManagement;
 
@@ -47,7 +46,6 @@ public class SnakeContorl : MonoBehaviour
     public bool gameOver;
     private bool flag = false;
     private bool win = false;
-    private int winTurnDir = 1;
     public bool start = false;
 
     public GameObject AllTexts;
@@ -73,7 +71,6 @@ public class SnakeContorl : MonoBehaviour
         ScoreText.enabled = false;
         
     }
-
 
     
     // Update is called once per frame
@@ -142,31 +139,6 @@ public class SnakeContorl : MonoBehaviour
             start = false;
             StatusText.text = "You're the longest CATerpillar!";
             AllTexts.SetActive(true);
-
-
-            /*while(moveStep.x > 9.0f || moveStep.x < 0.0f)
-            {
-                moveStep = new Vector3(Random.Range(-1.0f,1.0f),0.0f,0.0f);
-            }*/
-
-
-            /*if(transform.position.z > 8.0f)
-            {
-                transform.position = new Vector3(transform.position.x, transform.position.y, 8.0f);
-            }
-            if(transform.position.z < 2.0f)
-            {
-                transform.position = new Vector3(transform.position.x, transform.position.y, 2.0f);
-            }
-            if(transform.position.x > 8.0f)
-            {
-                transform.position = new Vector3(8.0f, transform.position.y, transform.position.z);
-            }
-            if(transform.position.x < 2.0f)
-            {
-                transform.position = new Vector3(2.0f, transform.position.y, transform.position.z);
-            }*/
-
             //change direction
             float steerDirection = Random.Range(-0.5f,-1.0f);
             int steerAng = Random.Range(90,180);
@@ -196,15 +168,13 @@ public class SnakeContorl : MonoBehaviour
 
     
 
-    /*void LateUpdate()
+    void Update()
     {
-        if(gameOver)
+        if(Input.GetKeyDown (KeyCode.Return))
         {
-            //print("FALLLLLL DOWN NOW");
-            Camera.transform.position = transform.position + offset;
+           GetStart();
         }
-
-    }*/
+    }
 
     private void GrowSnake()
     {
@@ -224,8 +194,13 @@ public class SnakeContorl : MonoBehaviour
             score ++;
             if(score % 3 == 0)
             {
-                MoveSpeed += 1.8f;
-                BodySpeed += 1.8f;
+                MoveSpeed += 1.5f;
+                BodySpeed += 1.5f;
+                if(MoveSpeed > 15)
+                {
+                    MoveSpeed = 15.0f;
+                    BodySpeed = 15.0f;
+                }
                 Gap = Mathf.RoundToInt(40/BodySpeed);
             }
             //print(score);
@@ -233,7 +208,7 @@ public class SnakeContorl : MonoBehaviour
         }
     }
 
-    void OnStart()
+    void GetStart()
     {
         AllTexts.SetActive(false);
         ScoreText.enabled = true;
